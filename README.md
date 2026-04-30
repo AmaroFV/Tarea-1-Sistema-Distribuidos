@@ -10,7 +10,7 @@ Arquitectura con 4 módulos (secuenciales) y un Redis:
 ### Requisitos
 
 - Docker y Docker Compose
-- Crear una carpeta llamada "data"
+- Crear una carpeta llamada "data", la cual contiene el csv
 - Dataset `region_metropolitana.csv` dentro de `./data/region_metropolitana.csv`
 
 Campos esperados del CSV: `latitude`, `longitude`, `area_in_meters`, `confidence`.
