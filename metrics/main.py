@@ -69,6 +69,7 @@ async def get_metrics_summary():
     misses = len(df[df["event_type"] == "cache_miss"])
     total = hits + misses
     hit_rate = (hits / total) if total > 0 else 0
+    miss_rate = (misses / total) if total > 0 else 0
 
     # Cálculo de Throughput (Consultas/segundo) [cite: 180]
     if total > 1:
@@ -82,10 +83,34 @@ async def get_metrics_summary():
     p50 = latencies.quantile(0.5) if not latencies.empty else 0
     p95 = latencies.quantile(0.95) if not latencies.empty else 0
 
+    # Eviction rate (evictions/min)
+    evictions = len(df[df["event_type"] == "eviction"])
+    # Usamos la misma ventana temporal del experimento si hay >1 evento, si no 0
+    eviction_rate_per_min = 0
+    if len(df) > 1:
+        duration_s = df["timestamp"].max() - df["timestamp"].min()
+        eviction_rate_per_min = (evictions / duration_s) * 60 if duration_s > 0 else 0
+
+    # Cache efficiency: (hits*t_cache - misses*t_db) / total
+    # Aproximación: t_cache = latencia promedio de hits, t_db = latencia promedio de misses
+    hit_lat = df[(df["event_type"] == "cache_hit") & df["latency_ms"].notnull()][
+        "latency_ms"
+    ]
+    miss_lat = df[(df["event_type"] == "cache_miss") & df["latency_ms"].notnull()][
+        "latency_ms"
+    ]
+    t_cache = float(hit_lat.mean()) if not hit_lat.empty else 0.0
+    t_db = float(miss_lat.mean()) if not miss_lat.empty else 0.0
+    cache_efficiency = ((hits * t_cache) - (misses * t_db)) / total if total > 0 else 0.0
+
     return {
         "hit_rate": round(hit_rate, 4),
+        "miss_rate": round(miss_rate, 4),
         "throughput_req_sec": round(throughput, 2),
         "latency_p50_ms": round(p50, 2),
         "latency_p95_ms": round(p95, 2),
+        "evictions_total": int(evictions),
+        "eviction_rate_per_min": round(eviction_rate_per_min, 4),
+        "cache_efficiency": round(float(cache_efficiency), 4),
         "total_events": len(df),
     }

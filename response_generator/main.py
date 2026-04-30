@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from typing import Optional
 import pandas as pd
 import numpy as np
+import os
 
 app = FastAPI()
 
@@ -31,7 +32,7 @@ ZONES = {
     },
     "Z4": {
         "name": "Santiago Centro",
-        "lat_min": -33.470,
+        "lat_min": -33.460,
         "lat_max": -33.430,
         "lon_min": -70.670,
         "lon_max": -70.630,
@@ -63,8 +64,8 @@ def load_data():
     global data_in_memory
     print("Iniciando carga y filtrado de datos...")
 
-    # IMPORTANTE: Asegúrate de que el nombre coincida con tu explorador de archivos
-    file_path = "../data/region_metropolitana.csv.csv"
+    # El CSV debe estar montado en /app/data via docker-compose
+    file_path = os.getenv("DATA_FILE", "data/region_metropolitana.csv")
 
     cols = ["latitude", "longitude", "area_in_meters", "confidence"]
 
@@ -90,6 +91,7 @@ def load_data():
 
     except Exception as e:
         print(f"Error grave cargando los datos: {e}")
+        raise
 
 
 class QueryRequest(BaseModel):

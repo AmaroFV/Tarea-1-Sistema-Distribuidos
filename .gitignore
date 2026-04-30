@@ -1,7 +1,33 @@
-data/
+# Datos pesados y logs
+data/region_metropolitana.csv
+data/events_log.csv
 *.csv
+
+# Caché de Python
 __pycache__/
-.env
 *.pyc
-*.ipynb
+*.pyo
+
+# Entornos virtuales y variables de entorno
 **/.venv/
+**/venv/
+.env
+
+# Jupyter Notebooks (opcional)
+*.ipynb
+.ipynb_checkpoints/
+
+# Docker (no subir imágenes construidas)
+docker-compose.override.yml
+
+# IDE
+.vscode/
+.idea/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Archivos temporales
+*.log
+*.tmp
