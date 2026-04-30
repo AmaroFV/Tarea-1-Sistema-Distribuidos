@@ -26,7 +26,7 @@ docker compose up --build
 Servicios:
 
 - Redis: `localhost:6379`
-- http://localhost:8002/summary
+- http://localhost:8002/summary (para ver las metricas en el buscador)
 
 ### Configuración de experimentos (caché)
 
