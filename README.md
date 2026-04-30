@@ -10,6 +10,7 @@ Arquitectura con 4 módulos (secuenciales) y un Redis:
 ### Requisitos
 
 - Docker y Docker Compose
+- crear una carpeta llamda "data"
 - Dataset `region_metropolitana.csv` dentro de `./data/region_metropolitana.csv`
 
 Campos esperados del CSV: `latitude`, `longitude`, `area_in_meters`, `confidence`.
@@ -24,10 +25,8 @@ docker compose up --build
 
 Servicios:
 
-- `response_generator`: `http://localhost:8000/docs`
-- `cache_service`: `http://localhost:8001/docs`
-- `metrics_service`: `http://localhost:8002/docs` (resumen en `GET /summary`)
 - Redis: `localhost:6379`
+- http://localhost:8002/summary
 
 ### Configuración de experimentos (caché)
 
